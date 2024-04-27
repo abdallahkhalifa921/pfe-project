@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  postgresdb:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./app-back
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/postgres
+    depends_on:
+      - postgresdb
+
+  frontend:
+    build: ./app-front
+    ports:
+      - "4200:80"
+
+volumes:
+  postgres_data:
+
